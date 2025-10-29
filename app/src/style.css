@@ -1,0 +1,30 @@
+/* Global theme variables
+   Light: text black, background white
+   Dark: inverted */
+
+:root,
+[data-theme="light"] {
+  --text-color: #000000;
+  --bg-color: #ffffff;
+  --header-bg: #ffffff;
+  --muted: #606266;
+}
+
+[data-theme="dark"] {
+  --text-color: #ffffff;
+  --bg-color: #0f1418; /* dark background */
+  --header-bg: #14181b;
+  --muted: #cfcfd0;
+}
+
+html, body, #app {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* make header pick up theme colors by default */
+.header {
+  background-color: var(--header-bg);
+  color: var(--text-color);
+}

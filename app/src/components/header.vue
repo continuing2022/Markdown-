@@ -2,14 +2,18 @@
   <div class="header">
     <div class="left">
       <!-- public 下的静态资源可以通过根路径访问 -->
-      <img src="/assets/images/logo.svg" alt="Logo" class="logo" />
+      <img :src="`/assets/images/logo-${theme}.svg`" alt="Logo" class="logo" />
     </div>
     <div class="right">
       <div class="theme" @click="handleThemeChange">
-        <el-icon v-if="isDarkTheme" size="20px"><Moon /></el-icon>
+        <el-icon v-if="theme === 'dark'" size="20px"><Moon /></el-icon>
         <el-icon v-else size="20px"><Sunny /></el-icon>
       </div>
-      <el-dropdown placement="top-start" @command="handleCommand">
+      <el-dropdown 
+        placement="top-start" 
+        popper-class="dropdown-style"
+        trigger ="click"
+        @command="handleCommand">
         <el-button> {{ currentLanguage }} </el-button>
         <template #dropdown>
           <el-dropdown-menu>
@@ -30,17 +34,14 @@
 </template>
 
 <script setup>
-import { Moon, Sunny ,Setting} from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { Moon, Sunny, Setting } from '@element-plus/icons-vue'
+import { ref, computed } from 'vue'
+import useTheme from '@/hook/theme'
+
 // 主题
-const isDarkTheme = ref(false)
-const handleThemeChange=()=>{
-  isDarkTheme.value = !isDarkTheme.value
-  if(isDarkTheme.value){
-    document.documentElement.setAttribute('data-theme','dark')
-  }else{
-    document.documentElement.setAttribute('data-theme','light')
-  }
+const { theme, setTheme } = useTheme()
+const handleThemeChange = () => {
+  setTheme(theme.value==='light' ? 'dark' : 'light')
 }
 // 语言切换
 const currentLanguage = ref('Chinese')
@@ -72,17 +73,17 @@ const handleCommand=(command)=>{
     cursor: pointer;
     width:30px;
     height: 30px;
-    border: 1px solid #dcdfe6;
+    border: 1px solid var(--muted);
     border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(237, 239, 250);
-    transition: all 1s;
+    background-color: transparent;
+    transition: all 200ms;
   }
   .theme:hover {
-    border-color: #909399;
-    background-color: rgb(220, 222, 232);
+    border-color: var(--text-color);
+    background-color: rgba(0,0,0,0.04);
   }
   .translation{
     cursor: pointer;

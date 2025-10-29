@@ -11,6 +11,7 @@
 
 <style scoped>
 .home {
+  margin-top:64px;
   padding: 20px;
   text-align: center;
 }
