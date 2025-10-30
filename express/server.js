@@ -78,16 +78,37 @@ app.post('/markdown/notes', (req, res) => {
 app.put('/markdown/notes/:id', (req, res) => {
   const noteId = parseInt(req.params.id);
   const { title, content } = req.body;
-  if (isNaN(noteId)) return res.status(400).json({ success: false, message: '无效的笔记ID' });
-  if (!title) return res.status(400).json({ success: false, message: '标题不能为空' });
-
-  const sql = 'UPDATE notes SET title = ?, content = ?, updated_at = NOW() WHERE id = ?';
-  db.query(sql, [title, content || '', noteId], (err, result) => {
+  if (isNaN(noteId)) {
+    return res.status(400).json({ success: false, message: '无效的笔记ID' });
+  }
+  // 构建要更新的字段
+  const fields = [];
+  const values = [];
+  if (title !== undefined) {   // 用户传了 title 就更新
+    if (title.trim() === '') {
+      return res.status(400).json({ success: false, message: '标题不能为空' });
+    }
+    fields.push('title = ?');
+    values.push(title);
+  }
+  if (content !== undefined) { // 用户传了 content 就更新
+    fields.push('content = ?');
+    values.push(content);
+  }
+  if (fields.length === 0) {
+    return res.status(400).json({ success: false, message: '没有需要更新的字段' });
+  }
+  // 自动更新 updated_at
+  fields.push('updated_at = NOW()');
+  const sql = `UPDATE notes SET ${fields.join(', ')} WHERE id = ?`;
+  values.push(noteId);
+  db.query(sql, values, (err, result) => {
     if (err) return res.status(500).json({ success: false, message: '更新失败' });
     if (result.affectedRows === 0) return res.status(404).json({ success: false, message: '笔记未找到' });
     res.json({ success: true, message: '更新成功' });
   });
 });
+
 // 删除笔记
 app.delete('/markdown/notes/:id', (req, res) => {
   const noteId = parseInt(req.params.id);

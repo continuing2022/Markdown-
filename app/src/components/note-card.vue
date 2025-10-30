@@ -8,11 +8,11 @@
         placement="bottom"
       >
         <div class="settings">
-          <div class="setting-item" @click.stop>
+          <div class="setting-item" @click.stop="updateTitle">
               <el-icon class="setting-icon"><EditPen /></el-icon>
               <p class="setting-text">{{$t("update")}}</p>
           </div>
-          <div class="setting-item" @click.stop>
+          <div class="setting-item" @click.stop="deleteNote">
             <el-icon class="setting-icon"><Delete /></el-icon>
             <p class="setting-text">{{$t("delete")}}</p>
           </div>
@@ -23,18 +23,20 @@
         </template>
       </el-popover>
     </div>
-    <div class="content">
-      <p> {{ title }} </p>
-      <p> {{ $t("edit") }} {{ time }} </p>
+    <div class="content" :style="{ paddingTop: moveText ? '24px' : '63px' }">
+      <p ref="text"> {{ title }} </p>
+      <p> {{ $t("edit") }} {{ formattedTime }} </p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { More,EditPen,Delete } from '@element-plus/icons-vue'
-import useTheme from '@/hook/theme'
+import { computed, onMounted, ref } from 'vue';
+import dayjs from 'dayjs';
+import useTheme from '@/hook/theme';
 const { theme } = useTheme()
-defineProps({
+const props = defineProps({
   title: {
     type: String,
     default: ''
@@ -44,6 +46,33 @@ defineProps({
     default: ''
   }
 })
+const formattedTime = computed(() => {
+  // 使用 props.time（在 <script setup> 中通过 defineProps 返回的对象）
+  return props.time ? dayjs(props.time).format('MMM D, YYYY') : '';
+});
+
+const emit = defineEmits(['delete-note-handle', 'update-title-handle']);
+
+// 获取标题文本 DOM ref（用于计算是否需要移动文本样式）
+const text = ref(null);
+const moveText = ref(false);
+onMounted(() => {
+  if (text.value && text.value.scrollHeight > 48) {
+    moveText.value = true;
+  }
+});
+
+const updateTitle = async () => {
+  const newTitle = window.prompt('Enter new title', props.title);
+  if (newTitle !== null) {
+    emit('update-title-handle', newTitle);
+  }
+};
+
+// 删除笔记：发出事件，父组件负责删除逻辑
+const deleteNote = () => {
+  emit('delete-note-handle');
+};
 </script>
 
 <style scoped lang="scss">
@@ -106,7 +135,6 @@ defineProps({
   }
 }
 .content{
-  padding-top:24px ;
   text-align: left; // 新增：使内部文本左对齐
   p{
     margin: 0;
