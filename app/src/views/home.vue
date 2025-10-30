@@ -2,15 +2,33 @@
   <div class="home">
     <h2 class="title">{{$t("Recent")}}</h2>
     <div class="notes">
-      <note-add />
-      <note-card v-for="n in 6" :key="n"/>
+      <note-add @click="()=> editNote(-1)"/>
+      <note-card 
+      v-for="n in 6" 
+      title="Webpack构建流程面试必备"
+      time="2024-06-01 12:30"
+      :key="n"
+      @click="() => editNote(n)"/>
     </div>
   </div>
 </template>
 
 <script setup> 
 import noteCard from '@/components/note-card.vue';
+import { useRouter } from 'vue-router';
 import noteAdd from '@/components/note-add.vue';
+const router = useRouter();
+const editNote=(id)=>{
+  if(id===-1){
+    router.push({
+      path: '/markdown/new'
+    })
+    return;
+  }
+  router.push({
+    path: `/markdown/${id}`
+  })
+}
 </script>
 
 <style scoped lang="scss">

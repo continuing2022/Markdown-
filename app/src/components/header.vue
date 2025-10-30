@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <div class="left">
+    <div class="left" @click="backHome">
       <!-- public 下的静态资源可以通过根路径访问 -->
       <img :src="`/assets/images/logo-${theme}.svg`" alt="Logo" class="logo" />
     </div>
@@ -38,6 +38,7 @@ import { Moon, Sunny, Setting } from '@element-plus/icons-vue'
 import { ref, computed } from 'vue'
 import useTheme from '@/hook/theme'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 // 主题
 const { theme, setTheme } = useTheme()
@@ -52,7 +53,10 @@ const handleCommand=(command)=>{
   locale.value = command;
   localStorage.setItem('language', command);
 }
-
+const router = useRouter()
+const backHome=()=>{
+  router.push({ path: '/' })
+}
 </script>
 
 <style scoped lang="scss">

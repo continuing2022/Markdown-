@@ -8,23 +8,24 @@
         placement="bottom"
       >
         <div class="settings">
-          <div class="setting-item">
+          <div class="setting-item" @click.stop>
               <el-icon class="setting-icon"><EditPen /></el-icon>
               <p class="setting-text">{{$t("update")}}</p>
           </div>
-          <div class="setting-item">
+          <div class="setting-item" @click.stop>
             <el-icon class="setting-icon"><Delete /></el-icon>
             <p class="setting-text">{{$t("delete")}}</p>
           </div>
         </div>
         <template #reference>
-          <el-icon class="more"><More /></el-icon>
+          <!-- 阻止点击事件冒泡到父组件（home.vue 对 note-card 使用了 @click） -->
+          <el-icon class="more" @click.stop><More /></el-icon>
         </template>
       </el-popover>
     </div>
     <div class="content">
-      <p> Webpack构建流程面试必备 </p>
-      <p> {{ $t("edit") }} 2024-06-01 12:30 </p>
+      <p> {{ title }} </p>
+      <p> {{ $t("edit") }} {{ time }} </p>
     </div>
   </div>
 </template>
@@ -33,6 +34,16 @@
 import { More,EditPen,Delete } from '@element-plus/icons-vue'
 import useTheme from '@/hook/theme'
 const { theme } = useTheme()
+defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
+  time: {
+    type: String,
+    default: ''
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -41,7 +52,11 @@ const { theme } = useTheme()
   height: 200px;
   border-radius: 10px;
   background-color: var(--card-bg);
-  padding: 24px;  
+  padding: 24px; 
+  transition: all 0.5s;
+  &:hover{
+    transform: translateY(-4px);
+  } 
 }
 .nav{
   display: flex;

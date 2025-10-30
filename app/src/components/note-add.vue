@@ -21,6 +21,10 @@ import { Plus } from '@element-plus/icons-vue'
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.5s;
+  &:hover{
+    transform: translateY(-4px);
+  } 
   .card-add{
     font-size: 2rem;
     color: var(--muted);
