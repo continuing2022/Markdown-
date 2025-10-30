@@ -17,8 +17,8 @@
         <el-button> {{ currentLanguage }} </el-button>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item command="Chinese">中文</el-dropdown-item>
-            <el-dropdown-item command="English">English</el-dropdown-item>
+            <el-dropdown-item command="zh">{{$t("Chinese")}}</el-dropdown-item>
+            <el-dropdown-item command="en">{{$t("English")}}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -37,6 +37,7 @@
 import { Moon, Sunny, Setting } from '@element-plus/icons-vue'
 import { ref, computed } from 'vue'
 import useTheme from '@/hook/theme'
+import { useI18n } from 'vue-i18n'
 
 // 主题
 const { theme, setTheme } = useTheme()
@@ -44,9 +45,12 @@ const handleThemeChange = () => {
   setTheme(theme.value==='light' ? 'dark' : 'light')
 }
 // 语言切换
-const currentLanguage = ref('Chinese')
+const currentLanguage = ref(localStorage.getItem('language') === 'zh' ? '中文' : 'English')
+const { locale } = useI18n()
 const handleCommand=(command)=>{
-  currentLanguage.value = command
+  currentLanguage.value = command === 'zh' ? '中文' : 'English';
+  locale.value = command;
+  localStorage.setItem('language', command);
 }
 
 </script>
