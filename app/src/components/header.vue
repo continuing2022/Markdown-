@@ -89,17 +89,6 @@ const handleCommand=(command)=>{
     border-color: var(--text-color);
     background-color: rgba(0,0,0,0.04);
   }
-  .translation{
-    cursor: pointer;
-    width:30px;
-    height: 30px;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(237, 239, 250);
-  }
   .photo{
     width:38px;
     height:38px;

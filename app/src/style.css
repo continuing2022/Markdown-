@@ -8,6 +8,8 @@
   --bg-color: #ffffff;
   --header-bg: #ffffff;
   --muted: #606266;
+  --card-bg:rgb(242, 242, 232);
+  --card-more:rgb(224, 230, 231); 
 }
 
 [data-theme="dark"] {
@@ -15,6 +17,8 @@
   --bg-color: #0f1418; /* dark background */
   --header-bg: #14181b;
   --muted: #cfcfd0;
+  --card-bg: rgb(58, 58, 47);
+  --card-more:rgb(66, 69, 63);
 }
 
 html, body, #app {

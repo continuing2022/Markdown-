@@ -1,18 +1,35 @@
 <template>
   <div class="home">
-    <h1>Welcome to the Home Page</h1>
-    <p>This is the main landing page of the application.</p>
+    <h2 class="title">{{$t("Recent")}}</h2>
+    <div class="notes">
+      <note-add />
+      <note-card v-for="n in 6" :key="n"/>
+    </div>
   </div>
 </template>
 
 <script setup> 
-
+import noteCard from '@/components/note-card.vue';
+import noteAdd from '@/components/note-add.vue';
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .home {
-  margin-top:64px;
-  padding: 20px;
-  text-align: center;
+  /* 限制最大宽度并水平居中，让页面在大屏上看起来居中 */
+  padding: 6rem 20px 2rem;
+  max-width: 1430px;
+  margin: 0 auto;
+  .title{
+    margin: 0 0 1rem 0;
+    text-align: left; /* 标题左对齐 */
+  }
+  .notes{
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: flex-start; /* 水平居中卡片 */
+    align-items: flex-start;
+  }
 }
 </style>
