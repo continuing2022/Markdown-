@@ -13,10 +13,12 @@
 </template>
 
 <script setup> 
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import { marked } from 'marked'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { getNoteById,updateNote,createNote } from '@/api'
 const route = useRoute()
+const router = useRouter()
 
 // 输入内容
 const markdownContent = ref('# Hello Markdown!\n\n这是 **Vue3 + marked.js** 示例')
@@ -24,13 +26,49 @@ const markdownContent = ref('# Hello Markdown!\n\n这是 **Vue3 + marked.js** �
 const compiledMarkdown = computed(() => {
   return marked.parse(markdownContent.value)
 })
+// 监听文本变化并且调用函数保存（使用 debounce 减少请求）
+const saveTimer = ref(null)
+const lastSaved = ref(markdownContent.value)
+
+watch(markdownContent, (newValue) => {
+  // 如果和上次已保存内容相同，则跳过
+  if (newValue === lastSaved.value) return
+
+  if (saveTimer.value) clearTimeout(saveTimer.value)
+
+  // 用户停止输入 1200ms 后再保存一次
+  saveTimer.value = setTimeout(async () => {
+    const id = route.params.id
+    try {
+      if (id && id !== 'new') {
+        console.log('Auto-saving note id:', id)
+        await updateNote(id, { content: newValue })
+        lastSaved.value = newValue
+      } else {
+        const res = await createNote({ content: newValue })
+        const newId = res.data.data.id
+        lastSaved.value = newValue
+        // 切换到新创建的笔记路由
+        router.replace({ path: `/markdown/${newId}` })
+      }
+    } catch (err) {
+      console.error('Auto-save failed:', err)
+    }
+  }, 1200)
+})
+
+onBeforeUnmount(() => {
+  if (saveTimer.value) clearTimeout(saveTimer.value)
+})
 onMounted(()=>{
   const id = route.params.id
   if(id && id !== 'new'){
-    // 模拟获取笔记内容
-    markdownContent.value = `# 笔记 ${id}\n\n这是第 ${id} 个笔记的内容。`
+    getNoteById(id).then(res => {
+      markdownContent.value = res.data.data.content
+    })
   }
 })
+
 </script>
 
 <style scoped lang="scss">
