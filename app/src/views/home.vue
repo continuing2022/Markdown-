@@ -9,17 +9,25 @@
       :time="item.updated_at"
       :key="item.id"
       @delete-note-handle="() => deleteNoteHandle(item.id)"
-      @update-title-handle="(newTitle) => updateTitleHandle(item.id, newTitle)"
+      @update-title-handle="(icon) => updateTitleHandle(item.id, icon)"
       @click="() => editNote(item.id)"/>
     </div>
+    <edit-title 
+      class="home-edit"
+      :show="editShow"
+      :icon="icon"
+      :edit-id="editId"
+      @close-edit="closeEdit">
+    </edit-title> 
   </div>
 </template>
 
 <script setup> 
 import noteCard from '@/components/note-card.vue';
 import { useRouter } from 'vue-router';
-import { getNotes, deleteNote, updateNote } from '@/api';
+import { getNotes, deleteNote } from '@/api';
 import noteAdd from '@/components/note-add.vue';
+import editTitle from '@/components/edit-title.vue';
 import { ref, onMounted } from 'vue';
 const router = useRouter();
 const editNote=(id)=>{
@@ -39,17 +47,25 @@ const deleteNoteHandle=async(id)=>{
   const res = await getNotes();
   notes.value = res.data.data;
 };
-const updateTitle=async(id,newTitle)=>{
-  await updateNote(id,{
-    title: newTitle
+const icon=ref('');
+const editId=ref(-1);
+const updateTitleHandle=async(id,icons)=>{
+  icon.value = icons || '✏️';
+  editId.value = id;
+  editShow.value = true;
+};
+const editShow = ref(false);
+
+const closeEdit=()=>{
+  editShow.value = false;
+  // 更新数据
+  getNotes().then(res => {
+    notes.value = res.data.data;
   });
-  // 更新后刷新列表
-  const res = await getNotes();
-  notes.value = res.data.data;
 };
 // 调用接口获取数据
-const notes = ref([]);  
-onMounted(async()=>{
+const notes = ref([]);
+onMounted(async () => {
   const res = await getNotes();
   notes.value = res.data.data;
 });

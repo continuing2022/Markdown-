@@ -12,6 +12,7 @@
   --card-more:rgb(224, 230, 231); 
   --note-bg: rgb(237, 239, 250);
   --note-content-bg: rgb(255, 255, 255);
+  --edit-bg:rgb(255, 255, 255);
 }
 
 [data-theme="dark"] {
@@ -23,6 +24,7 @@
   --card-more:rgb(66, 69, 63);
   --note-bg: rgb(55, 56, 59);
   --note-content-bg: rgb(34, 38, 43);
+  --edit-bg:rgb(19, 19, 20);
 }
 
 html, body, #app {

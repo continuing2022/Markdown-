@@ -1,14 +1,15 @@
 <template>
   <div class="card">
     <div class="nav">
-  <div class="icon">{{ icon }}</div>
+    <div class="icon">{{ icon }}</div>
       <el-popover
-        trigger="click"
         :effect="theme"
         placement="bottom"
+        :show-arrow="false"
+        :visible="visible"
       >
         <div class="settings">
-          <div class="setting-item" @click.stop="updateTitle">
+          <div class="setting-item" @click.stop="()=>updateTitle(icon)">
               <el-icon class="setting-icon"><EditPen /></el-icon>
               <p class="setting-text">{{$t("update")}}</p>
           </div>
@@ -19,7 +20,7 @@
         </div>
         <template #reference>
           <!-- 阻止点击事件冒泡到父组件（home.vue 对 note-card 使用了 @click） -->
-          <el-icon class="more" @click.stop><More /></el-icon>
+          <el-icon class="more" @click.stop="visible=true"><More /></el-icon>
         </template>
       </el-popover>
     </div>
@@ -46,6 +47,7 @@ const props = defineProps({
   }
 })
 // 图标列表：如果传入 title 则基于 title 生成稳定的索引，否则使用随机选择
+const visible=ref(false);
 const icons = ['📚', '👨‍💻', '🌈', '🖌️', '💻'];
 const titleRef = toRef(props, 'title')
 const icon = computed(() => {
@@ -76,15 +78,16 @@ onMounted(() => {
   }
 });
 
-const updateTitle = async () => {
-  const newTitle = window.prompt('Enter new title', props.title);
-  if (newTitle !== null) {
-    emit('update-title-handle', newTitle);
+const updateTitle = async (icon) => {
+  visible.value = false;
+  if (icon !== null) {
+    emit('update-title-handle', icon);
   }
 };
 
 // 删除笔记：发出事件，父组件负责删除逻辑
 const deleteNote = () => {
+  visible.value = false;
   emit('delete-note-handle');
 };
 </script>
