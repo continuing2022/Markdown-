@@ -20,7 +20,7 @@
         </div>
         <template #reference>
           <!-- 阻止点击事件冒泡到父组件（home.vue 对 note-card 使用了 @click） -->
-          <el-icon class="more" @click.stop="visible=true"><More /></el-icon>
+          <el-icon class="more" @click.stop="visible=!visible"><More /></el-icon>
         </template>
       </el-popover>
     </div>

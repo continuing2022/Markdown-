@@ -10,11 +10,11 @@
         <el-input
           v-model="title"
           style="width: 200px;height: 50px; border-radius: 16px;"
-          placeholder="Please input title"
+          :placeholder="$t('placeholder')"
         />
         <div class="btns">
-          <el-button type="text" @click="confirm">确定</el-button>
-          <el-button type="text" @click="closeEdit">取消</el-button>
+          <el-button type="text" @click="confirm">{{ $t('save') }}</el-button>
+          <el-button type="text" @click="closeEdit">{{ $t('cancel') }}</el-button>
         </div>
       </div>
     </div>
