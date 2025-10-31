@@ -41,11 +41,10 @@ watch(markdownContent, (newValue) => {
     const id = route.params.id
     try {
       if (id && id !== 'new') {
-        console.log('Auto-saving note id:', id)
         await updateNote(id, { content: newValue })
         lastSaved.value = newValue
       } else {
-        const res = await createNote({ content: newValue })
+        const res = await createNote({ content: newValue,title: 'Untitled Note' })
         const newId = res.data.data.id
         lastSaved.value = newValue
         // 切换到新创建的笔记路由

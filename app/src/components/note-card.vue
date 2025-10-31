@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="nav">
-      <div class="icon">📚</div>
+  <div class="icon">{{ icon }}</div>
       <el-popover
         trigger="click"
         :effect="theme"
@@ -32,10 +32,9 @@
 
 <script setup>
 import { More,EditPen,Delete } from '@element-plus/icons-vue'
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref,toRef } from 'vue';
 import dayjs from 'dayjs';
 import useTheme from '@/hook/theme';
-const { theme } = useTheme()
 const props = defineProps({
   title: {
     type: String,
@@ -46,6 +45,21 @@ const props = defineProps({
     default: ''
   }
 })
+// 图标列表：如果传入 title 则基于 title 生成稳定的索引，否则使用随机选择
+const icons = ['📚', '👨‍💻', '🌈', '🖌️', '💻'];
+const titleRef = toRef(props, 'title')
+const icon = computed(() => {
+  const t = titleRef.value || ''
+  if (t.length === 0) {
+    // 没有 title 时随机选择一个
+    return icons[Math.floor(Math.random() * icons.length)];
+  }
+  // 基于 title 生成一个稳定的索引（简单哈希）
+  let sum = 0
+  for (let i = 0; i < t.length; i++) sum += t.charCodeAt(i)
+  return icons[sum % icons.length]
+})
+const { theme } = useTheme()
 const formattedTime = computed(() => {
   // 使用 props.time（在 <script setup> 中通过 defineProps 返回的对象）
   return props.time ? dayjs(props.time).format('MMM D, YYYY') : '';
